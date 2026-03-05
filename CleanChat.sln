@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanChat.Api", "CleanChat.Api\CleanChat.Api.csproj", "{09BA9884-5E07-47FD-BD74-773F6ECF2C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanChat.Application", "CleanChat.Application\CleanChat.Application.csproj", "{90D287CB-8A3B-4A9A-ADB0-E01374DA62E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanChat.Infrastructure", "CleanChat.Infrastructure\CleanChat.Infrastructure.csproj", "{CCA5EFD0-7228-456D-A1F6-5FC24B29F166}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanChat.Domain", "CleanChat.Domain\CleanChat.Domain.csproj", "{FFFE3E04-E991-413A-9F9B-6FC0053B5F8A}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "cleanchat_react", "cleanchat_react\cleanchat_react.esproj", "{FC68E804-19A5-D408-84BF-E5EBB13FC663}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09BA9884-5E07-47FD-BD74-773F6ECF2C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09BA9884-5E07-47FD-BD74-773F6ECF2C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09BA9884-5E07-47FD-BD74-773F6ECF2C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09BA9884-5E07-47FD-BD74-773F6ECF2C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D287CB-8A3B-4A9A-ADB0-E01374DA62E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D287CB-8A3B-4A9A-ADB0-E01374DA62E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D287CB-8A3B-4A9A-ADB0-E01374DA62E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D287CB-8A3B-4A9A-ADB0-E01374DA62E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA5EFD0-7228-456D-A1F6-5FC24B29F166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA5EFD0-7228-456D-A1F6-5FC24B29F166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA5EFD0-7228-456D-A1F6-5FC24B29F166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA5EFD0-7228-456D-A1F6-5FC24B29F166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFE3E04-E991-413A-9F9B-6FC0053B5F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFE3E04-E991-413A-9F9B-6FC0053B5F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFE3E04-E991-413A-9F9B-6FC0053B5F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFE3E04-E991-413A-9F9B-6FC0053B5F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC68E804-19A5-D408-84BF-E5EBB13FC663}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F164564-55D7-4379-A7D3-202189BD6872}
+	EndGlobalSection
+EndGlobal

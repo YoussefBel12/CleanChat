@@ -1,0 +1,135 @@
+﻿
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 12px;
+        }
+
+        #messages {
+            border: 1px solid #ccc;
+            padding: 8px;
+            height: 300px;
+            overflow: auto;
+            margin-bottom: 8px;
+        }
+
+        .msg {
+            margin: 4px 0;
+        }
+
+        .me {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chat test</h2>
+
+    <div>
+        <label>Email: <input id="email" value="test@local" /></label>
+        <label>Password: <input id="password" value="P@ssword1" type="password" /></label>
+        <button id="login">Login & Connect</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <div>
+        <input id="messageInput" style="width:70%" placeholder="Type a message..." />
+        <button id="sendBtn" disabled>Send</button>
+    </div>
+
+    <script>
+        let connection = null;
+        const messagesEl = document.getElementById('messages');
+        const append = (text, cls) => {
+            const d = document.createElement('div');
+            d.className = 'msg ' + (cls || '');
+            d.textContent = text;
+            messagesEl.appendChild(d);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        };
+
+        async function loginAndConnect() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const resp = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+
+
+       
+
+
+
+            });
+
+            if (!resp.ok) {
+                append('Login failed: ' + resp.status);
+                return;
+            }
+
+            const json = await resp.json();
+            const token = json.token ?? json.accessToken ?? json.jwt ?? json.tokenValue;
+            if (!token) {
+                append('Login response did not contain token. Inspect response: ' + JSON.stringify(json));
+                return;
+            }
+
+            append('Got token, connecting to SignalR...');
+            const hubUrl = `${location.origin}/chatHub`;
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl(hubUrl, { accessTokenFactory: () => token })
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveMessage", (user, message, timestamp) => {
+                const isMe = false; // If you want to mark your messages, compare user or message id
+                append(`[${new Date(timestamp).toLocaleTimeString()}] ${user}: ${message}`, isMe ? 'me' : '');
+            });
+
+            try {
+                await connection.start();
+                append('SignalR connected to ' + hubUrl);
+
+
+
+                // fetch and render history
+                const res = await fetch(`/api/messages`);
+                if (res.ok) {
+                    const items = await res.json();
+                    items.forEach(it => append(`[${new Date(it.timestamp).toLocaleTimeString()}] ${it.user}: ${it.message}`));
+                }
+
+
+
+
+
+                document.getElementById('sendBtn').disabled = false;
+            } catch (err) {
+                append('Connection error: ' + (err && err.toString ? err.toString() : err));
+            }
+        }
+
+        document.getElementById('login').addEventListener('click', loginAndConnect);
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const input = document.getElementById('messageInput');
+            if (!connection) { append('Not connected'); return; }
+            const text = input.value.trim();
+            if (!text) return;
+            try {
+                await connection.invoke('SendMessage', text);
+                input.value = '';
+            } catch (err) {
+                append('Send error: ' + err);
+            }
+        });
+    </script>
+</body>
+</html>
