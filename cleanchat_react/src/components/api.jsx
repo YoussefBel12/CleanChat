@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: 'https://localhost:7155/api'
 });
 
-// Interceptor: Runs before every request
+// Interceptor: Runs before every request check authenciation token 
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {

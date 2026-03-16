@@ -1,33 +1,25 @@
 
 
 
+import React from "react";
+import { ThemeProvider, createTheme } from "@mui/material";
+import SignalRProvider from "./components/SignalRProvider";
+import ChatPage from "./components/ChatPage";
 
-import Login from "./components/Login";
-import Register from "./components/Register";
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+const theme = createTheme({
+    palette: {
+        primary: { main: "#2e7d32" },
+        secondary: { main: "#a5d6a7" },
+    },
+});
 
-function App() {
-
-
-
+ function App() {
     return (
-        <Router>
-            <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
-               |
-                <Link to="/login"> Login</Link> |
-                <Link to="/register"> Register</Link>
-            </nav>
-
-            <Routes>
-                
-                <Route path="/" element={<Login />} />
-
-              
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-            </Routes>
-        </Router>
+        <ThemeProvider theme={theme}>
+            <SignalRProvider>
+                <ChatPage />
+            </SignalRProvider>
+        </ThemeProvider>
     );
 }
-
 export default App;
