@@ -28,4 +28,26 @@ namespace CleanChat.Domain.Entities
         public string Message { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
+
+
+
+
+    //new entity to represent group membership (many-to-many relationship between users and groups)
+    public class GroupMember
+    {
+        public int Id { get; set; }
+
+        public string UserId { get; set; } = string.Empty;
+        public ApplicationUser User { get; set; }
+
+        public string GroupId { get; set; } = string.Empty;
+        public ChatGroup Group { get; set; }
+
+        public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
+    }
+
+
+
+
+
 }

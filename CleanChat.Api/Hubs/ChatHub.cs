@@ -291,15 +291,59 @@ namespace CleanChat.Api.Hubs
             await Clients.Caller.SendAsync("GroupCreated", new { id = group.Id, name = group.Name });
         }
 
+
+
+        // Group membership management this code is updated 
+        /*  public async Task JoinGroup(string groupId)
+          {
+              var user = Context.User;
+              var senderName = user?.FindFirst("FullName")?.Value ?? user?.Identity?.Name ?? "Unknown";
+
+              await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
+              await Clients.Group(groupId).SendAsync("GroupNotification", $"{senderName} joined group {groupId}");
+          } */
+
         public async Task JoinGroup(string groupId)
         {
-            var user = Context.User;
-            var senderName = user?.FindFirst("FullName")?.Value ?? user?.Identity?.Name ?? "Unknown";
+            var userId = Context.UserIdentifier;
+
+            if (string.IsNullOrEmpty(userId)) return;
+
+            // check if already joined
+            var exists = _db.GroupMembers.Any(gm => gm.UserId == userId && gm.GroupId == groupId);
+
+            if (!exists)
+            {
+                _db.GroupMembers.Add(new GroupMember
+                {
+                    UserId = userId,
+                    GroupId = groupId
+                });
+
+                await _db.SaveChangesAsync();
+            }
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
-            await Clients.Group(groupId).SendAsync("GroupNotification", $"{senderName} joined group {groupId}");
+
+            var senderName = Context.User?.FindFirst("FullName")?.Value ?? "Unknown";
+
+            await Clients.Group(groupId).SendAsync("GroupNotification", $"{senderName} joined group");
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
         public async Task LeaveGroup(string groupId)
         {
             var user = Context.User;
@@ -307,10 +351,46 @@ namespace CleanChat.Api.Hubs
 
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId);
             await Clients.Group(groupId).SendAsync("GroupNotification", $"{senderName} left group {groupId}");
+        }*/
+
+        public async Task LeaveGroup(string groupId)
+        {
+            var userId = Context.UserIdentifier;
+
+            var membership = _db.GroupMembers
+                .FirstOrDefault(gm => gm.UserId == userId && gm.GroupId == groupId);
+
+            if (membership != null)
+            {
+                _db.GroupMembers.Remove(membership);
+                await _db.SaveChangesAsync();
+            }
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId);
+
+            var senderName = Context.User?.FindFirst("FullName")?.Value ?? "Unknown";
+
+            await Clients.Group(groupId).SendAsync("GroupNotification", $"{senderName} left group");
         }
+
+
+
+
+        //added code at top of sendgroupmessage method
 
         public async Task SendGroupMessage(string groupId, string message)
         {
+            ///////////////////////////////
+            var userId = Context.UserIdentifier;
+
+            var isMember = _db.GroupMembers
+                .Any(gm => gm.UserId == userId && gm.GroupId == groupId);
+
+            if (!isMember)
+                throw new HubException("You are not a member of this group");
+
+
+            ///////////////////////////
             var user = Context.User;
             var senderId = Context.UserIdentifier ?? user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
             var senderName = user?.FindFirst("FullName")?.Value ?? user?.Identity?.Name ?? "Unknown";

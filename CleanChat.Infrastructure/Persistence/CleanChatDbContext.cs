@@ -20,6 +20,7 @@ namespace CleanChat.Infrastructure.Persistence
         public DbSet<ChatMessage> ChatMessages { get; set; }
             public DbSet<ChatGroup> ChatGroups { get; set; }
         public DbSet<GroupMessage> GroupMessages { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
 
     }
 

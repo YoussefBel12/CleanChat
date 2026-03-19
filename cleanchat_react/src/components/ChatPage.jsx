@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useState, useRef } from "react";
+﻿
+import React, { useEffect, useState, useRef } from "react";
 import {Button, Box, AppBar, Toolbar, Typography, Container, Grid, Paper, Snackbar, Alert } from "@mui/material";
 import LoginBar from "./LogoutBar";
 import ChannelsSidebar from "./ChannelsSidebar";
@@ -38,11 +39,30 @@ export default function ChatPage() {
 
 
     // helper: push message into messagesMap and unread counters
+    /*
     function pushMessage(key, text) {
         setMessagesMap(prev => {
             const copy = { ...prev, [key]: [...(prev[key] || []), text] };
             return copy;
         });
+        */
+    function pushMessage(key, text) {
+        setMessagesMap(prev => {
+            const updated = [...(prev[key] || []), text];
+
+            return {
+                ...prev,
+                [key]: updated.slice(-10) // keep ONLY last 10 messages
+            };
+        });
+
+    // unread logic stays the same
+
+
+
+
+
+
 
         // unread if not active
         const channelKey = channelKeyFor(channel);
@@ -78,13 +98,7 @@ export default function ChatPage() {
         } catch (err) { console.warn(err); }
     }
 
-    /*
-    async function loadPublicHistory() {
-        try {
-            const res = await api.get("/Messages");
-            setMessagesMap(prev => ({ ...prev, public: res.data.map(i => formatMsg(i.timestamp, i.user, i.message)) }));
-        } catch (err) { console.warn(err); }
-    } */
+   
     async function loadPublicHistory(loadMore = false) {
         try {
             const key = "public";
@@ -225,15 +239,7 @@ export default function ChatPage() {
     }, [channel]);
 
 
-    /*
-    async function fetchPrivateHistory(otherUserId) {
-        try {
-            const res = await api.get(`/Messages/private/${otherUserId}`);
-            const key = `user:${otherUserId}`;
-            setMessagesMap(prev => ({ ...prev, [key]: res.data.map(i => formatMsg(i.timestamp, i.user, i.message)) }));
-        } catch (err) { console.warn(err); }
-    }
-    */
+ 
 
     async function fetchPrivateHistory(otherUserId, loadMore = false) {
         try {
@@ -266,15 +272,7 @@ export default function ChatPage() {
 
 
 
-    /*
-    async function fetchGroupHistory(groupId) {
-        try {
-            const res = await api.get(`/groups/${groupId}/messages`);
-            const key = `group:${groupId}`;
-            setMessagesMap(prev => ({ ...prev, [key]: res.data.map(i => formatMsg(i.timestamp, i.senderName, i.message)) }));
-        } catch (err) { console.warn(err); }
-    }
-    */
+ 
 
 
     async function fetchGroupHistory(groupId, loadMore = false) {
@@ -395,7 +393,7 @@ export default function ChatPage() {
                                 {channel.type === "group" && `Group: ${groups.find(g => g.id === channel.id)?.name ?? 'Group'}`}
                             </Typography>
 
-                            {/*    <MessageList messages={currentMessages} />  change this for one bellow*/}
+                            
                             <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
                                 <Button
                                     size="small"
@@ -449,3 +447,7 @@ export default function ChatPage() {
         </Box>
     );
 }
+
+
+
+
