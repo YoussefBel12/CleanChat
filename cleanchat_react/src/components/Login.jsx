@@ -1,55 +1,19 @@
 ﻿/*
-
-import { useState } from 'react';
-import api from './api'; // Your Axios instance
-
-
-const Login = () => {
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
-
-    const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await api.post('/Auth/login', credentials);
-            // ASP.NET Identity usually returns the token in response.data.token
-            const token = response.data.token;
-            localStorage.setItem('token', token);
-            alert("Logged in successfully!");
-            window.location.reload(); // Refresh to update the 'api' instance with the new token
-        } catch (err) {
-            alert("Invalid email or password");
-        }
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
-            <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-            <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
-            <button type="submit">Login</button>
-        </form>
-    );
-};
-
-
-export default Login;
-
-LOGIN WITHOUT MATERIELUI
-*/
-
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Paper, Avatar, InputAdornment, IconButton, Link, CircularProgress } from '@mui/material';
 import { LockOutlined, Visibility, VisibilityOff, MailOutline } from '@mui/icons-material';
 import api from './api';
-
+//for navigation after login
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+    //added navigation
+    const navigate = useNavigate();
+ 
+
 
     const handleChange = (e) => setCredentials({ ...credentials, [e.target.name]: e.target.value });
 
@@ -59,7 +23,9 @@ const Login = () => {
         try {
             const response = await api.post('/Auth/login', credentials);
             localStorage.setItem('token', response.data.token);
-            window.location.href = "/";
+           
+            // after success
+            navigate("/");
         } catch (err) {
             alert("Invalid email or password");
         } finally {
@@ -97,6 +63,138 @@ const Login = () => {
 
                         <Box mt={4}>
                             <Link href="/register" sx={{ fontWeight: '500' }}>Create a new account</Link>
+                        </Box>
+                    </form>
+                </Paper>
+            </Container>
+        </Box>
+    );
+};
+
+export default Login;
+*/
+
+
+import React, { useState } from 'react';
+import {
+    TextField, Button, Container, Typography, Box, Paper,
+    Avatar, InputAdornment, IconButton, Link, CircularProgress
+} from '@mui/material';
+import { LockOutlined, Visibility, VisibilityOff, MailOutline } from '@mui/icons-material';
+import api from './api';
+import { useNavigate } from 'react-router-dom';
+
+const Login = () => {
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+    const navigate = useNavigate();
+
+    const handleChange = (e) =>
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const response = await api.post('/Auth/login', credentials);
+            localStorage.setItem('token', response.data.token);
+
+            navigate('/');
+        } catch (err) {
+            alert("Invalid email or password");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Box
+            sx={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+            }}
+        >
+            <Container maxWidth="xs">
+                <Paper elevation={12} sx={{ p: 5, borderRadius: 5, textAlign: 'center' }}>
+                    <Avatar sx={{ m: '0 auto 20px', bgcolor: 'secondary.main', width: 60, height: 60 }}>
+                        <LockOutlined fontSize="large" />
+                    </Avatar>
+
+                    <Typography variant="h4" fontWeight="900" gutterBottom>
+                        Welcome To CleanChat
+                    </Typography>
+
+                    <Typography variant="body1" color="text.secondary" mb={4}>
+                        Login to your account
+                    </Typography>
+
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            onChange={handleChange}
+                            required
+                            autoFocus
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <MailOutline />
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            label="Password"
+                            name="password"
+                            onChange={handleChange}
+                            required
+                            type={showPassword ? 'text' : 'password'}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <LockOutlined />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowPassword(!showPassword)}>
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            disabled={loading}
+                            sx={{
+                                mt: 4,
+                                py: 1.8,
+                                borderRadius: '50px',
+                                fontSize: '1.1rem'
+                            }}
+                        >
+                            {loading ? <CircularProgress size={26} color="inherit" /> : "Sign In"}
+                        </Button>
+
+                        <Box mt={4}>
+                            <Link href="/register" underline="hover">
+                                Create a new account
+                            </Link>
                         </Box>
                     </form>
                 </Paper>

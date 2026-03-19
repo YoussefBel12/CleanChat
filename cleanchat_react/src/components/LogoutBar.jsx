@@ -1,13 +1,16 @@
-﻿import React, { useState } from "react";
+﻿/*
+
+import React, { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { useSignalR } from "./SignalRProvider";
 import api from "./api";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginBar({ onConnectedUser }) {
-    const [email, setEmail] = useState("manal@gmail.com");
-    const [password, setPassword] = useState("Manal123&");
+    const [email, setEmail] = useState(localStorage.getItem("email") || "")
+    const [password, setPassword] = useState("");
     const { connect, disconnect, connected } = useSignalR();
-
+    const navigate = useNavigate(); //  ADD THIS
     async function loginAndConnect() {
         try {
             const res = await api.post("/Auth/login", { email, password });
@@ -22,6 +25,9 @@ export default function LoginBar({ onConnectedUser }) {
             } catch { }
 
             await connect(token);
+            localStorage.setItem("email", email);
+
+            navigate("/"); // redirect after login
         } catch (err) {
             console.warn("login error", err);
             alert("Login failed");
@@ -32,6 +38,7 @@ export default function LoginBar({ onConnectedUser }) {
         localStorage.removeItem("token");
         await disconnect();
         onConnectedUser?.({ id: "", name: "" });
+        navigate("/login"); // redirect after logout
     }
 
     return (
@@ -41,9 +48,51 @@ export default function LoginBar({ onConnectedUser }) {
             {!connected ? (
                 <Button variant="contained" onClick={loginAndConnect}>Login & Connect</Button>
             ) : (
-                <Button variant="outlined" onClick={logout}>Logout</Button>
+                    <Button variant="contained" onClick={logout}>Logout</Button>
             )}
         </Box>
     );
 }
+*/
 
+
+import React from "react";
+import { Button, Typography, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useSignalR } from "./SignalRProvider";
+
+export default function LoginBar({ onConnectedUser }) {
+    const { disconnect } = useSignalR();
+    const navigate = useNavigate();
+
+    //  get user name from token
+    let name = "";
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            name = payload.FullName || payload.name || "";
+        } catch { }
+    }
+
+    async function logout() {
+        localStorage.removeItem("token");
+        await disconnect();
+        onConnectedUser?.({ id: "", name: "" });
+
+        navigate("/login");
+    }
+
+    return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="body2">
+                Hi, {name || "User"}
+            </Typography>
+
+            <Button variant="contained" color="error" onClick={logout}>
+                Logout
+            </Button>
+        </Box>
+    );
+}
