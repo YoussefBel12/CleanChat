@@ -102,7 +102,6 @@ builder.Services.AddCors(options =>
 
 
 
-
 // add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly));
 

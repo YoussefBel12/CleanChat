@@ -14,14 +14,17 @@ namespace CleanChat.Api.Controllers
         public MessagesController(CleanChatDbContext db) => _db = db;
 
         [HttpGet]
-        public IActionResult GetRecent(int take = 10 , int skip = 0)
+        //public IActionResult GetRecent(int take = 10 , int skip = 0)
+        public IActionResult GetRecent(int take = 10, int skip = 0, string? currentUserId = null)
         {
             var messages = _db.ChatMessages
+                .Where(m => m.ReceiverId == null || m.ReceiverId == currentUserId || m.SenderId == currentUserId)
                 .OrderByDescending(m => m.Timestamp)
                 .Skip(skip)
                 .Take(take)
                 .OrderBy(m => m.Timestamp) // return oldest -> newest
-                .Select(m => new { m.Id, m.SenderId, m.User, m.Message, m.Timestamp })
+                                           // .Select(m => new { m.Id, m.SenderId, m.User, m.Message, m.Timestamp })
+                .Select(m => new { m.Id, m.SenderId, m.ReceiverId, m.User, m.Message, m.Timestamp })
                 .ToList();
 
             return Ok(messages);
